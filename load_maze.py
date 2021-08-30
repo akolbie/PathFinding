@@ -133,6 +133,15 @@ def get_grid(input_location, white_border = False):
 
     return maze_grid, start, end
 
+def draw_path(output_location, points, data):
+    for point in points:
+        data[point[0]][point[1]] = 0.5
+    data_array = np.array(data)
+    image = Image.fromarray(np.uint8(data_array * 255), "L")
+    image.save(output_location)
+    image.show()
+    input()
+
 if __name__ == "__main__":
     # data = load_image("Mazes/maze1.gif")
     # data_no_border = remove_white_border(data)

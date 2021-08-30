@@ -44,13 +44,15 @@ def main(location, bordered = False):
                 break
             if move in explored:
                 min_index = min(min_index, explored.index(move))
-        move_list.append(explored[min_index])
         if start in move_list:
             break
+        move_list.append(explored[min_index])
 
-    return move_list[::-1]
+
+    return move_list[::-1], maze_data
 
 
 if __name__ == '__main__':
-   moves = main("Mazes/maze1.gif", True )
+   moves, data = main("Mazes/maze1.gif", True )
+   load_maze.draw_path("BFS_complete_path.png", moves, data)
    print(moves)
