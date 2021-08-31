@@ -114,10 +114,29 @@ def find_start_end(data):
     print(f'Error, only found entrance {output}')
     return 0
 
+def change_shape(data):
+    output = []
+    for row in data:
+        output.append([])
+        for column in row:
+            if sum(column) == 0:
+                output[-1].append(0)
+            else:
+                output[-1].append(1)
+    return output
+
 def get_grid(input_location, white_border = False):
     data = load_image(input_location)
+    print(data.shape)
+    if len(data.shape) > 2:
+        data = change_shape(data)
+        data = np.array(data)
+        print(data.shape)
+
     if white_border:
         data = remove_white_border(data)
+        image = Image.fromarray(np.uint8(data * 255), "L")
+        image.save("testing1.png")
     white_row_smallest = find_smallest(1, data)
     white_col_smallest = find_smallest(1, np.transpose(data))
     black_row_smallest = find_smallest(0, data)
@@ -161,6 +180,8 @@ if __name__ == "__main__":
     # maze_grid_array = np.array(maze_grid)
     # image = Image.fromarray(np.uint8(maze_grid_array * 255), "L")
     # image.save('test.png')
-    grid, start, end = get_grid("Mazes/maze1.gif", True)
+    #grid, start, end = get_grid("Mazes/maze1.gif",True)
+    #grid, start, end = get_grid("Mazes/maze2.jpg", True)
+    grid, start, end = get_grid("Mazes/maze3.png", True)
     print(f"{start} {end}")
     

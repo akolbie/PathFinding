@@ -53,6 +53,6 @@ def main(location, bordered = False):
 
 
 if __name__ == '__main__':
-   moves, data = main("Mazes/maze1.gif", True )
+   moves, data = main("Mazes/maze2.jpg", True )
    load_maze.draw_path("BFS_complete_path.png", moves, data)
    print(moves)
