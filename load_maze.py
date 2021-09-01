@@ -125,6 +125,17 @@ def change_shape(data):
                 output[-1].append(1)
     return output
 
+def normalize(data):
+    output = []
+    for i in range(len(data)):
+        output.append([])
+        for j in range(len(data[0])):
+            if data[i][j] == 0:
+                output[-1].append(0)
+            else:
+                output[-1].append(1)
+    return output
+
 def get_grid(input_location, white_border = False):
     data = load_image(input_location)
     print(data.shape)
@@ -132,9 +143,10 @@ def get_grid(input_location, white_border = False):
         data = change_shape(data)
         data = np.array(data)
         print(data.shape)
+    data = normalize(data)
 
     if white_border:
-        data = remove_white_border(data)
+        data = remove_white_border(np.array(data))
         image = Image.fromarray(np.uint8(data * 255), "L")
         image.save("testing1.png")
     white_row_smallest = find_smallest(1, data)
@@ -152,9 +164,14 @@ def get_grid(input_location, white_border = False):
 
     return maze_grid, start, end
 
+def draw_explored(points, data):
+    for point in points:
+        data[point[0]][point[1]] = .3
+    return data
+
 def draw_path(output_location, points, data):
     for point in points:
-        data[point[0]][point[1]] = 0.5
+        data[point[0]][point[1]] = 0.6
     data_array = np.array(data)
     image = Image.fromarray(np.uint8(data_array * 255), "L")
     image.save(output_location)

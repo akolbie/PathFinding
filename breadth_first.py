@@ -11,6 +11,8 @@ def find_moves(data, location):
             location[1] + direction[1]]
         if move_location[0] < 0 or move_location[1] < 0:
             continue
+        elif move_location[0] == len(data) or move_location[1] == len(data[0]):
+            continue
         elif data[move_location[0]][move_location[1]] == 1:
             moves.append(move_location)
     return moves
@@ -49,10 +51,11 @@ def main(location, bordered = False):
         move_list.append(explored[min_index])
 
 
-    return move_list[::-1], maze_data
+    return explored, move_list[::-1], maze_data
 
 
 if __name__ == '__main__':
-   moves, data = main("Mazes/maze2.jpg", True )
+   explored, moves, data = main("Mazes/maze1a.gif", True)
+   data = load_maze.draw_explored(explored, data)
    load_maze.draw_path("BFS_complete_path.png", moves, data)
    print(moves)
