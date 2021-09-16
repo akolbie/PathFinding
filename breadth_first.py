@@ -17,28 +17,44 @@ def find_moves(data, location):
             moves.append(move_location)
     return moves
 
-def main(location, bordered = False):
-    maze_data, end, start = load_maze.get_grid(location, True)
+def depth_first_explore(start, end, data):
     que = [start]
     explored = []
-    solution_found = False
-    while True:
-        moves = find_moves(maze_data, que[0])
+
+    while len(que) > 0:
+        moves = find_moves(data, que[0])
         explored.append(que.pop(0))
         for move in moves:
             if move == end:
-                solution_found = True
-                break
+                return explored
+            if move in explored:
+                continue
+            if move in que:
+                que.pop(que.index(move))
+            que.insert(0, move)
+    return False
+
+def breadth_first_explore(start, end, data):
+    que = [start]
+    explored = []
+
+    while len(que) > 0:
+        moves = find_moves(data, que[0])
+        explored.append(que.pop(0))
+        for move in moves:
+            if move == end:
+                return explored
             if move in explored or move in que:
                 continue
             else:
                 que.append(move)
-        if solution_found:
-            break
+    return False
 
+def find_path_from_explored(start, end, explored, data):
     move_list = [end]
+
     while True:
-        moves = find_moves(maze_data, move_list[-1])
+        moves = find_moves(data, move_list[-1])
         min_index = len(explored) + 1
         for move in moves:
             if move == start:
@@ -51,11 +67,27 @@ def main(location, bordered = False):
         move_list.append(explored[min_index])
 
 
-    return explored, move_list[::-1], maze_data
+    return move_list[::-1]
 
+def depth_first_main(maze_data, start, end):    
+    explored = depth_first_explore(start, end, maze_data)
+    if not explored:
+        print("Failed to find solution")
+        return False, False, maze_data
+    solution = find_path_from_explored(start, end, explored, maze_data)
+    return explored, solution
+
+def breadth_first_main(maze_data, start, end):    
+    explored = breadth_first_explore(start, end, maze_data)
+    if not explored:
+        print("Failed to find solution")
+        return False, False, maze_data
+    solution = find_path_from_explored(start, end, explored, maze_data)
+    return explored, solution
 
 if __name__ == '__main__':
-   explored, moves, data = main("Mazes/maze1a.gif", True)
-   data = load_maze.draw_explored(explored, data)
-   load_maze.draw_path("BFS_complete_path.png", moves, data)
-   print(moves)
+    maze_data, start, end = load_maze.get_grid("Mazes/maze1.gif", True)
+    explored, moves = breadth_first_main(maze_data, start, end)
+    #explored, moves = depth_first_main(maze_data, start, end)
+    data = load_maze.draw_explored(explored, maze_data)
+    load_maze.draw_path("BFS_complete_path.png", moves, data)

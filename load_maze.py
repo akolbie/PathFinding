@@ -175,8 +175,6 @@ def draw_path(output_location, points, data):
     data_array = np.array(data)
     image = Image.fromarray(np.uint8(data_array * 255), "L")
     image.save(output_location)
-    image.show()
-    input()
 
 if __name__ == "__main__":
     # data = load_image("Mazes/maze1.gif")
