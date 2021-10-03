@@ -2,7 +2,7 @@ from pygame.locals import *
 import pygame 
 from math import floor
 import breadth_first
-from load_maze import get_grid
+from load_maze import get_grid,  draw_explored, draw_path
 
 
 class App:
@@ -91,7 +91,9 @@ class Maze:
 
 
 if __name__ == "__main__" :
-    data, start, end = get_grid("Mazes/maze1.gif", True)
-    explored, path = breadth_first.breadth_first_main(data, start, end)
+    data, start, end = get_grid("Mazes/maze1a.gif", True)
+    explored, path = breadth_first.a_star_main(data, start, end)
+    img_data = draw_explored(explored, data)
+    draw_path("testming1.gif", path, img_data)
     theApp = App(data, start, end, explored, path, 10, 10)
     theApp.on_execute()

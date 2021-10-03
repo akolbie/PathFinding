@@ -1,13 +1,21 @@
 from PIL import Image
 from time import sleep
 import numpy as np
+import csv
 from numpy.core.numeric import outer
+from numpy.lib.function_base import average
 
 def load_image(location):
     image = Image.open(location)
     image_data = np.asarray(image)
 
     return image_data
+
+def write_image(location, data):
+    with open(location, 'w+') as f:
+        csv_writer = csv.writer(f)
+        for row in data:
+            csv_writer.writerow(row)
 
 def remove_white_border(image_data):
     i, j, k, z = 0, 0, 0, 0
@@ -119,7 +127,7 @@ def change_shape(data):
     for row in data:
         output.append([])
         for column in row:
-            if sum(column) == 0:
+            if average(column) <= 127:
                 output[-1].append(0)
             else:
                 output[-1].append(1)
@@ -197,6 +205,6 @@ if __name__ == "__main__":
     # image.save('test.png')
     #grid, start, end = get_grid("Mazes/maze1.gif",True)
     #grid, start, end = get_grid("Mazes/maze2.jpg", True)
-    grid, start, end = get_grid("Mazes/maze3.png", True)
+    grid, start, end = get_grid("Mazes/maze3.png")
     print(f"{start} {end}")
     

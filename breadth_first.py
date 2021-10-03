@@ -1,4 +1,4 @@
-from numpy.lib.function_base import trapz
+from math import sqrt
 import load_maze
 
 def find_moves(data, location):
@@ -17,12 +17,48 @@ def find_moves(data, location):
             moves.append(move_location)
     return moves
 
+def taxicab_distance(a, b):
+    return abs(a[0] - b[0]) + abs(a[1] - b[1])
+
+def crowfly_distance(a, b):
+    return sqrt((a[0] - b[0])**2 + (a[1] - b[1])**2)
+
+def find_que_position(que, move, end):
+    i = 0
+    for i, que_spot in enumerate(que):
+        if move[1] < que_spot[1]:
+            return i
+        elif move[1] == que_spot[1]:
+            move[2] = crowfly_distance(move[0], end)
+            if que_spot[2] == None:
+                que_spot[2] = crowfly_distance(que_spot[0], end)
+            if move[2] <= que_spot[2]:
+                return i
+        continue
+    return i + 1
+
+def a_star_explore(start, end, data):
+    que = [[start, None, None]]
+    explored = []
+
+    while len(que) > 0:
+        moves = find_moves(data, que[0][0])
+        explored.append(que.pop(0)[0])
+        for move in moves:
+            if move == end:
+                return explored
+            move = [move, taxicab_distance(move, end), None]
+            if move in que or move[0] in explored:
+                continue
+            que.insert(find_que_position(que, move, end), move)
+    return False
+
 def depth_first_explore(start, end, data):
     que = [start]
     explored = []
 
     while len(que) > 0:
-        moves = find_moves(data, que[0])
+        moves = find_moves(data, que[0][0])
         explored.append(que.pop(0))
         for move in moves:
             if move == end:
@@ -69,11 +105,19 @@ def find_path_from_explored(start, end, explored, data):
 
     return move_list[::-1]
 
+def a_star_main(maze_data, start, end):
+    explored = a_star_explore(start, end, maze_data)
+    if not explored:
+        print("Failed to find solution")
+        return False, False
+    solution = find_path_from_explored(start, end, explored, maze_data)
+    return explored, solution
+
 def depth_first_main(maze_data, start, end):    
     explored = depth_first_explore(start, end, maze_data)
     if not explored:
         print("Failed to find solution")
-        return False, False, maze_data
+        return False, False
     solution = find_path_from_explored(start, end, explored, maze_data)
     return explored, solution
 
@@ -81,7 +125,7 @@ def breadth_first_main(maze_data, start, end):
     explored = breadth_first_explore(start, end, maze_data)
     if not explored:
         print("Failed to find solution")
-        return False, False, maze_data
+        return False, False
     solution = find_path_from_explored(start, end, explored, maze_data)
     return explored, solution
 
